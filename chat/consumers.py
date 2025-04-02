@@ -93,7 +93,7 @@ async def get_attachments_for_message(message):
     try:
         attachments = await sync_to_async(list)(message.attachments.all())
         # print("Fetched Attachments:", attachments)
-        
+
         return [
             {
                 "original_name": attachment.original_name,
