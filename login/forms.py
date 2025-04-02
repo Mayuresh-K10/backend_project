@@ -92,7 +92,7 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['text']
-		
+
 class Step1Form(forms.ModelForm):
     class Meta:
         model = AdmissionReview1
@@ -123,7 +123,7 @@ class Step5Form(forms.ModelForm):
     class Meta:
         model = AdmissionReview1
         fields = ["profile_photo", "campus_photos", "agree_terms"]
-    
+
     # Handling file upload fields
     profile_photo = forms.FileField(required=False)
     campus_photos = forms.FileField(required=False)

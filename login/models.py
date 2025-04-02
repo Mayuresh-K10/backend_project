@@ -217,7 +217,7 @@ class AdmissionReview1(models.Model):
 
 
     agree_terms = models.BooleanField(default=True)
-    
+
 class UnregisteredColleges(models.Model):
     university_name = models.CharField(max_length=255)
     official_email = models.EmailField(unique=True,default="Null")

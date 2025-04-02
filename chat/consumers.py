@@ -35,9 +35,9 @@ def save_attachments(message, attachments):
     saved_attachments = []
 
     for attachment in attachments:
-        file_url = attachment.get("url")  
-        original_name = attachment.get("original_name") 
-        file_type = attachment.get("file_type", "unknown") 
+        file_url = attachment.get("url")
+        original_name = attachment.get("original_name")
+        file_type = attachment.get("file_type", "unknown")
 
         # print("file_url:", file_url)
         # print("original_name:", original_name)
@@ -59,7 +59,7 @@ def save_attachments(message, attachments):
             "original_name": attachment_obj.original_name,
             "file_type": attachment_obj.file_type,
         })
-        
+
         message.save()
 
     return saved_attachments
@@ -104,7 +104,7 @@ async def get_attachments_for_message(message):
             for attachment in attachments
 
         ]
-    
+
     except Exception as e:
         print(f"Error retrieving attachments: {e}")
         return []
@@ -123,7 +123,7 @@ def set_online_status(user_email, is_online, user_model):
             defaults={'is_online': is_online}
         )
         print(f"User online status updated: {user_email} -> {is_online}")
-        return status  
+        return status
 
     except Exception as e:
         print(f"Error in set_online_status: {e}")

@@ -1,6 +1,6 @@
 import pandas as pd  # type: ignore
-from django.core.management.base import BaseCommand
-from test_series.models import Exam, ProctoringSession, Question
+from django.core.management.base import BaseCommand # type: ignore
+from test_series.models import Exam, Question
 
 
 class Command(BaseCommand):

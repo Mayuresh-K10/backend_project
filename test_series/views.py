@@ -265,13 +265,13 @@ def submit_answer(request):
         clear_response = form.cleaned_data['clear_response']
 
         session = get_object_or_404(
-            ProctoringSession.objects.select_related('exam').only('id', 'exam_id'), 
+            ProctoringSession.objects.select_related('exam').only('id', 'exam_id'),
             id=session_id,
             user=user
         )
 
         question = get_object_or_404(
-            Question.objects.only('id', 'status', 'correct_option'), 
+            Question.objects.only('id', 'status', 'correct_option'),
             exam_id=session.exam_id,
             question_no=question_no
         )
@@ -440,7 +440,7 @@ def mark_for_review(request):
         form = MarkForReviewForm(data)
         if not form.is_valid():
             return api_response(success=False, error='Invalid data', details=form.errors, status=400)
-        
+
         session_id = form.cleaned_data['session_id']
         question_no = form.cleaned_data['question_no']
         mark = form.cleaned_data['mark']

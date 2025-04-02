@@ -1111,7 +1111,7 @@ class ChangePasswordConsultantView(View):
                 return JsonResponse({'error': 'All fields are required'}, status=400)
             if new_password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
-            
+
             if old_password == new_password:
                 return JsonResponse({'error': 'New password cannot be the same as the old password'}, status=400)
 
