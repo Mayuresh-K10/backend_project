@@ -1,14 +1,10 @@
-from turtle import update
 from asgiref.sync import sync_to_async # type: ignore
 from django.core.exceptions import ObjectDoesNotExist # type: ignore
 from django.db.models import Q # type: ignore
-import requests # type: ignore
 from .models import Message, MessageAttachment
 from login.models import JobSeeker, new_user, CompanyInCharge, UniversityInCharge # type: ignore
 from channels.generic.websocket import AsyncJsonWebsocketConsumer # type: ignore
 from dateutil import parser # type: ignore
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer # type: ignore
 from django.core.mail import send_mail # type: ignore
 from django.conf import settings # type: ignore
 from .models import OnlineStatus
@@ -55,7 +51,7 @@ def save_attachments(message, attachments):
             original_name=original_name,
             file_type=file_type,
         )
-        
+
         message.attachments.add(attachment_obj)
 
         saved_attachments.append({
@@ -132,8 +128,6 @@ def set_online_status(user_email, is_online, user_model):
     except Exception as e:
         print(f"Error in set_online_status: {e}")
         return None
-
-    
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -290,7 +284,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
             if recipient_status is None or not recipient_status.is_online:
                 print(f"Recipient {recipient_email} online status: {recipient_status}")
-                
+
                 email_content = f"You have received a new message from {sender_email}.\n\n"
 
                 if subject:
@@ -407,4 +401,4 @@ class NotificationMessageConsumer(AsyncJsonWebsocketConsumer):
             email=email,
             defaults={"is_online": status, "last_seen": now()},
         )
-    
+

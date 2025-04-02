@@ -1,4 +1,4 @@
-import json
+import json, os
 from django.shortcuts import get_object_or_404 # type: ignore
 from django.http import JsonResponse # type: ignore
 from django.utils import timezone # type: ignore
@@ -8,13 +8,12 @@ from .models import  ProctoringEvent, ProctoringSession, Exam, Question, UserRes
 from .forms import ExamParticipantForm, MarkForReviewForm, StartProctoringSessionForm, EndProctoringSessionForm, RecordProctoringEventForm, SubmitAllAnswersForm, SubmitAnswerForm
 from django.core.mail import send_mail # type: ignore
 from django.conf import settings # type: ignore
-from rest_framework.views import APIView
-from django.utils.decorators import method_decorator
-from django.views import View
+from rest_framework.views import APIView # type: ignore
+from django.utils.decorators import method_decorator # type: ignore
+from django.views import View # type: ignore
 from .models import new_user
-from django.db.models import Count
-import os
-from django.utils.text import slugify 
+from django.db.models import Count # type: ignore
+from django.utils.text import slugify  # type: ignore
 
 
 def api_response(success, data=None, error=None, details=None, status=200):
@@ -267,13 +266,13 @@ def submit_answer(request):
 
         session = get_object_or_404(
             ProctoringSession.objects.select_related('exam').only('id', 'exam_id'), 
-            id=session_id, 
+            id=session_id,
             user=user
         )
 
         question = get_object_or_404(
             Question.objects.only('id', 'status', 'correct_option'), 
-            exam_id=session.exam_id, 
+            exam_id=session.exam_id,
             question_no=question_no
         )
 

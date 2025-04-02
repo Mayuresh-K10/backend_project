@@ -128,7 +128,7 @@ def inbox(request):
                 continue
 
             seen_conversations.add(conversation_with)
-            
+
             attachments = [
                 {
                     "id": attachment.id,

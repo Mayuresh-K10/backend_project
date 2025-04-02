@@ -3,7 +3,6 @@ from django.core.mail import send_mail # type: ignore
 from django.conf import settings # type: ignore
 from django.middleware.csrf import get_token # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
-
 from chat.models import OnlineStatus
 from .utils import (send_data_to_google_sheet3,send_data_to_google_sheet4,
 send_data_to_google_sheet2, send_data_to_google_sheet5, send_data_to_google_sheet6,send_data_to_google_sheets)
@@ -918,7 +917,7 @@ class LoginJobSeekerView(View):
                 job_seeker.token = token
                 job_seeker.is_online = True
                 job_seeker.save()
-                
+
                 OnlineStatus.objects.filter(email=job_seeker.email).update(is_online=True)
 
                 send_mail(

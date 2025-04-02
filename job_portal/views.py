@@ -4228,157 +4228,6 @@ def get_application_details(request, company_in_charge_id):
 
     return JsonResponse({'Candidates Applied': application_details})
 
-# @csrf_exempt
-# def update_company_application_status(request, company_in_charge_id, application_id):
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header or not auth_header.startswith('Bearer '):
-#         return JsonResponse({'error': 'Token is missing or invalid format'}, status=400)
-
-#     token = auth_header.split(' ')[1]
-
-#     try:
-#         company_in_charge = CompanyInCharge.objects.get(id=company_in_charge_id, token=token)
-#     except CompanyInCharge.DoesNotExist:
-#         return JsonResponse({'error': 'Invalid token or company in charge not found'}, status=401)
-
-#     try:
-#         application = Application.objects.get(company_in_charge=company_in_charge, id=application_id)
-#     except Application.DoesNotExist:
-#         return JsonResponse({'error': 'Application not found'}, status=404)
-
-#     try:
-#         data = json.loads(request.body)
-#         app_status = data.get("application_status")
-#         if not app_status:
-#             return JsonResponse({'error': 'Application status is required'}, status=400)
-
-#         application.status = app_status
-#         application.save()
-
-# ############################ Send Notifications Code
-#         channel_layer = get_channel_layer()
-
-#         async_to_sync(channel_layer.group_send)(
-#             f"notifications_{company_in_charge.token}",
-#             {
-#                 "type": "send_notification",
-#                 "message": f"Application status for {application.first_name} {application.last_name} updated to {application.status} by {company_in_charge.company_name}",
-#             },
-#         )
-
-#         if application.job_seeker:
-#             async_to_sync(channel_layer.group_send)(
-#                 f"notifications_{application.job_seeker.token}",
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}",
-#                 },
-#             )
-
-#         if application.user:
-#             async_to_sync(channel_layer.group_send)(
-#                 f"notifications_{application.user.token}",
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}",
-#                 },
-#             )
-
-#         return JsonResponse({'message': 'Application status updated successfully'}, status=200)
-
-#     except json.JSONDecodeError:
-#         return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
-
-# @csrf_exempt
-# def update_company_application_status(request, company_in_charge_id, application_id):
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header or not auth_header.startswith('Bearer '):
-#         return JsonResponse({'error': 'Token is missing or invalid format'}, status=400)
-
-#     token = auth_header.split(' ')[1]
-
-#     try:
-#         company_in_charge = CompanyInCharge.objects.get(id=company_in_charge_id, token=token)
-#     except CompanyInCharge.DoesNotExist:
-#         return JsonResponse({'error': 'Invalid token or company in charge not found'}, status=401)
-
-#     try:
-#         application = Application.objects.get(company_in_charge=company_in_charge, id=application_id)
-#     except Application.DoesNotExist:
-#         return JsonResponse({'error': 'Application not found'}, status=404)
-
-#     try:
-#         data = json.loads(request.body)
-#         app_status = data.get("application_status")
-#         if not app_status:
-#             return JsonResponse({'error': 'Application status is required'}, status=400)
-
-#         application.status = app_status
-#         application.save()
-
-#         ############################ Send Notifications Code ############################
-#         channel_layer = get_channel_layer()
-        
-#         company_email = company_in_charge.official_email.replace('@', '_at_').replace('.', '_dot_')
-#         notification_group = f"notifications_{company_email}"
-        
-#         notification_message = f"Application status for {application.first_name} {application.last_name} updated to {application.status} by {company_in_charge.company_name}"
-
-#         async_to_sync(channel_layer.group_send)(
-#             notification_group,
-#             {"type": "send_notification", "message": notification_message},
-#         )
-
-#         if application.job_seeker:
-#             job_seeker = application.job_seeker
-#             jobseeker_email = job_seeker.email.replace('@', '_at_').replace('.', '_dot_')
-#             recipient_status = OnlineStatus.objects.filter(email=job_seeker.email).first()
-#             job_seeker_group = f"notifications_{jobseeker_email}"
-            
-#             if recipient_status and recipient_status.is_online:
-#                 async_to_sync(channel_layer.group_send)(
-#                 job_seeker_group,
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}",
-#                 },
-#             )
-#             else:
-#                 send_mail(
-#                     subject="Application Status Update",
-#                     message=f"Dear {job_seeker.first_name} {job_seeker.last_name},\n\nYour application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}.\n\nHR Team\n{company_in_charge.company_name}",
-#                     from_email=settings.DEFAULT_FROM_EMAIL,
-#                     recipient_list=[job_seeker.email],
-#                 )
-
-#         if application.user:
-#             user = application.user
-#             user_email = user.email.replace('@', '_at_').replace('.', '_dot_')
-#             recipent_status = OnlineStatus.objects.filter(email=user_email).first()
-#             user_group = f"notifications_{user_email}"
-             
-#             if recipent_status and recipent_status.is_online:
-#                 async_to_sync(channel_layer.group_send)(
-#                 user_group,
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}",
-#                 },
-#             )
-#             else:
-#                 send_mail(
-#                     subject="Application Status Update",
-#                     message=f"Dear {user.firstname} {user.lastname},\n\nYour application for {application.job.job_title} has been updated to {application.status} by {company_in_charge.company_name}.\n\nBest Regards,\nHR Team\n{company_in_charge.company_name}",
-#                     from_email=settings.DEFAULT_FROM_EMAIL,
-#                     recipient_list=[user.email],
-#                 )
-
-#         return JsonResponse({'message': 'Application status updated successfully'}, status=200)
-
-#     except json.JSONDecodeError:
-#         return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
 @csrf_exempt
 def update_company_application_status(request, company_in_charge_id, application_id):
     auth_header = request.headers.get('Authorization')
@@ -4408,10 +4257,10 @@ def update_company_application_status(request, company_in_charge_id, application
 
         ############################ Send Notifications Code ############################
         channel_layer = get_channel_layer()
-        
+
         company_email = company_in_charge.official_email.replace('@', '_at_').replace('.', '_dot_')
         notification_group = f"notifications_{company_email}"
-        
+
         notification_message = f"Application status for {application.first_name} {application.last_name} updated to {application.status} by {company_in_charge.company_name}"
 
         async_to_sync(channel_layer.group_send)(
@@ -4425,7 +4274,7 @@ def update_company_application_status(request, company_in_charge_id, application
             jobseeker_email = job_seeker.email.replace('@', '_at_').replace('.', '_dot_')
             recipient_status = OnlineStatus.objects.filter(email=job_seeker.email).first()
             job_seeker_group = f"notifications_{jobseeker_email}"
-            
+
             if recipient_status and recipient_status.is_online:
                 async_to_sync(channel_layer.group_send)(
                     job_seeker_group,
@@ -4448,7 +4297,7 @@ def update_company_application_status(request, company_in_charge_id, application
             user_email = user.email.replace('@', '_at_').replace('.', '_dot_')
             recipient_status = OnlineStatus.objects.filter(email=user.email).first()
             user_group = f"notifications_{user_email}"
-             
+
             if recipient_status and recipient_status.is_online:
                 async_to_sync(channel_layer.group_send)(
                     user_group,
@@ -4469,70 +4318,6 @@ def update_company_application_status(request, company_in_charge_id, application
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
-
-
-# @csrf_exempt
-# def update_college_application_status(request, university_in_charge_id, application_id):
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header or not auth_header.startswith('Bearer '):
-#         return JsonResponse({'error': 'Token is missing or invalid format'}, status=400)
-
-#     token = auth_header.split(' ')[1]
-
-#     try:
-#         university_in_charge = UniversityInCharge.objects.get(id=university_in_charge_id, token=token)
-#     except UniversityInCharge.DoesNotExist:
-#         return JsonResponse({'error': 'Invalid token or university in charge not found'}, status=401)
-
-#     try:
-#         application = Application1.objects.get(university_in_charge=university_in_charge, id=application_id)
-#     except Application1.DoesNotExist:
-#         return JsonResponse({'error': 'Application not found'}, status=404)
-
-#     try:
-#         data = json.loads(request.body)
-#         app_status = data.get("application_status")
-
-#         if not app_status:
-#             return JsonResponse({'error': 'Application status is required'}, status=400)
-
-#         application.status = app_status
-#         application.save()
-
-# ######################### Send Notifications Code
-#         channel_layer = get_channel_layer()
-
-#         async_to_sync(channel_layer.group_send)(
-#             f"notifications_{university_in_charge.token}",
-#             {
-#                 "type": "send_notification",
-#                 "message": f"Application status for {application.first_name} {application.last_name} updated to {application.status} by {university_in_charge.university_name}",
-#             },
-#         )
-
-#         if application.job_seeker:
-#             async_to_sync(channel_layer.group_send)(
-#                 f"notifications_{application.job_seeker.token}",
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {university_in_charge.university_name}",
-#                 },
-#             )
-        
-#         if application.user:
-#             async_to_sync(channel_layer.group_send)(
-#                 f"notifications_{application.user.token}",
-#                 {
-#                     "type": "send_notification",
-#                     "message": f"Your application for {application.job.job_title} has been updated to {application.status} by {university_in_charge.university_name}",
-#                 },
-#             )
-
-#         return JsonResponse({'message': 'Application status updated successfully'}, status=200)
-
-#     except json.JSONDecodeError:
-#         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
 @csrf_exempt
 def update_college_application_status(request, university_in_charge_id, application_id):
@@ -4563,10 +4348,10 @@ def update_college_application_status(request, university_in_charge_id, applicat
 
         ############################ Send Notifications Code ############################
         channel_layer = get_channel_layer()
-        
+
         college_email = university_in_charge.official_email.replace('@', '_at_').replace('.', '_dot_')
         notification_group = f"notifications_{college_email}"
-        
+
         notification_message = f"Application status for {application.first_name} {application.last_name} updated to {application.status} by {university_in_charge.university_name}"
 
         async_to_sync(channel_layer.group_send)(
@@ -4580,7 +4365,7 @@ def update_college_application_status(request, university_in_charge_id, applicat
             jobseeker_email = job_seeker.email.replace('@', '_at_').replace('.', '_dot_')
             recipient_status = OnlineStatus.objects.filter(email=job_seeker.email).first()
             job_seeker_group = f"notifications_{jobseeker_email}"
-            
+
             if recipient_status and recipient_status.is_online:
                 async_to_sync(channel_layer.group_send)(
                     job_seeker_group,
@@ -4603,7 +4388,7 @@ def update_college_application_status(request, university_in_charge_id, applicat
             user_email = user.email.replace('@', '_at_').replace('.', '_dot_')
             recipient_status = OnlineStatus.objects.filter(email=user.email).first()
             user_group = f"notifications_{user_email}"
-             
+
             if recipient_status and recipient_status.is_online:
                 async_to_sync(channel_layer.group_send)(
                     user_group,

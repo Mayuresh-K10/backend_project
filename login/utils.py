@@ -33,7 +33,7 @@ def create_subadmin(username, password):
     return user
 
 def is_superadmin(user):
-    return user.is_superuser 
+    return user.is_superuser
 
 def send_data_to_google_sheets(first_name, last_name, email, country_code, phone_number, password, sheetname):
     if sheetname != "Sheet1":
@@ -80,7 +80,7 @@ def send_data_to_google_sheet2(companyname, officialmale, country_code, mobilenu
         valueInputOption='RAW',
         body=body
     ).execute()
-    
+
     updated_cells = result.get('updates', {}).get('updatedCells', 0)
     return JsonResponse({'message': f"{updated_cells} cells updated in {sheetname}."}, safe=False)
 

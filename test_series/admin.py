@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin # type: ignore
 from .models import Exam, ExamParticipant, ProctoringSession, ProctoringEvent, Question, UserResponse, UserScore
 
 admin.site.register(Exam)

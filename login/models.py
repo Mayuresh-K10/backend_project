@@ -162,7 +162,7 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Question(models.Model):
     text = models.TextField()
     # answer = models.TextField(blank=True, null=True)
